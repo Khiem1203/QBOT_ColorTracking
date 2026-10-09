@@ -6,7 +6,7 @@ Model {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.750"
+    ComputedModelVersion    "1.754"
     NumModelReferences	    0
     NumTestPointedSignals   0
     NumProvidedFunctions    0
@@ -209,7 +209,7 @@ Model {
       }
       WindowUuid	      ""
     }
-    BDUuid		    "8e5d03a9-b660-414b-ace8-9298978e71ab"
+    BDUuid		    "794265f5-042e-4efe-9e6a-7630cc3de7fe"
   }
   HideAutomaticNames	  on
   CheckForProblematicBlocks "on"
@@ -219,9 +219,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "Khim"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Thu Oct 08 10:13:39 2026"
-  RTWModifiedTimeStamp	  713355219
-  ModelVersionFormat	  "1.%<AutoIncrement:750>"
+  LastModifiedDate	  "Fri Oct 09 13:38:49 2026"
+  RTWModifiedTimeStamp	  713453896
+  ModelVersionFormat	  "1.%<AutoIncrement:754>"
   SampleTimeColors	  on
   SampleTimeAnnotations	  on
   LibraryLinkDisplay	  "none"
@@ -1841,7 +1841,7 @@ Model {
 	      Description	      ""
 	      TargetFcnLib	      "ansi_tfl_table_tmw.mat"
 	      TargetLibSuffix	      ".a"
-	      TargetPreCompLibLocation "C:\\PROGRA~3\\QUARC\\lib\\2017a\\LICFC8~1\\release"
+	      TargetPreCompLibLocation "C:\\PROGRA~3\\QUARC\\lib\\2019b\\LINUX_~1\\release"
 	      GenFloatMathFcnCalls    "NOT IN USE"
 	      TargetLangStandard      "C89/C90 (ANSI)"
 	      CodeReplacementLibrary  "None"
@@ -7152,7 +7152,7 @@ Model {
       ZOrder		      -72
       BackgroundColor	      "lightBlue"
       ShowName		      off
-      Value		      "[80 140]"
+      Value		      "[0 60]"
     }
     Block {
       BlockType		      Concatenate
@@ -7173,7 +7173,7 @@ Model {
       ZOrder		      -74
       BackgroundColor	      "lightBlue"
       ShowName		      off
-      Value		      "[200 255]"
+      Value		      "[0 52]"
     }
     Block {
       BlockType		      SubSystem
@@ -7374,7 +7374,7 @@ Model {
       ZOrder		      -75
       BackgroundColor	      "lightBlue"
       ShowName		      off
-      Value		      "[200 255]"
+      Value		      "[95 155]"
     }
     Line {
       ZOrder		      16
@@ -9884,8 +9884,6 @@ Stateflow {
     treeNode		    [0 77 0 0]
     viewObj		    76
     toolbarMode		    LIBRARY_TOOLBAR
-    subviewS {
-    }
     ssIdHighWaterMark	    9
     decomposition	    CLUSTER_CHART
     type		    EML_CHART

@@ -6,7 +6,9 @@ Built with MATLAB R2019b + QUARC. Four models, one picking script.
 |---|---|
 | `QBot2e_Manual_Control.mdl` | Keyboard driving only (copy of Lab 1 teleop) |
 | `QBot2e_Color_Picker.mdl` | Keyboard driving + press **C** to freeze a camera frame |
-| `pick_color.m` | Click the line color in the frozen frame; writes RGB thresholds into the tracking models |
+| `pick_color.m` | Live picker window: shows each frame frozen with **C**, you click the line, it saves the RGB range into the tracking models |
+| `read_captured_frame.m` | Helper used by `pick_color` to read the frames the robot sends to `captured_frames.bin` |
+| `set_tracking_gains.m` | Sets the tracking speed gains (Kv forward, Kw turning) in both tracking models |
 | `QBot2e_Color_Line_Tracking.mdl` | Follows the picked color only (copy of Lab 4 line following) |
 | `QBot2e_Manual_Track_Switch.mdl` | Starts in manual mode; **P** toggles color tracking on/off |
 | `build_models.m` | Regenerates all four models from the lab originals (overwrites them and resets the thresholds) |
@@ -29,7 +31,8 @@ Run exactly one of the four `.mdl` workflows below depending on what you want to
 For every model the run sequence is the same QUARC pattern:
 **Open `.mdl` → Build (hammer icon / Ctrl+B) → Connect → Start (play ▶).**
 Stop with the ■ button before closing or switching to another model.
-Keyboard input only works while the small QUARC/Host window has focus — click it before pressing keys.
+QUARC reads the keyboard from the whole desktop (no special window needs focus), so keys you type
+anywhere — including in the MATLAB command window — reach the robot while a model is running.
 
 ---
 
@@ -40,64 +43,51 @@ Keyboard input only works while the small QUARC/Host window has focus — click 
 1. Open the model in MATLAB/Simulink.
 2. Build it (Ctrl+B). Wait for the build to finish (status bar at the bottom).
 3. Click **Connect**, then **Start** (▶).
-4. Click on the small Host/keyboard window so it has focus.
-5. Drive:
+4. Drive:
    - **↑ / ↓** — forward / backward (0.15 m/s)
    - **← / →** — turn left / right (0.6 rad/s)
-6. Click **Stop** (■) when done.
+5. Click **Stop** (■) when done.
 
 ---
 
 ## 2. Pick the color
 
-This is a two-part flow: capture a frame on the robot, then pick the color in MATLAB.
+Everything happens while the robot is running — no need to stop the model.
 
-**Part A — capture the frame**
+**Files:** `QBot2e_Color_Picker.mdl` + `pick_color.m`
 
-**File:** `QBot2e_Color_Picker.mdl`
-
-1. Open, Build, Connect, Start — same as above.
-2. Click the Host window for keyboard focus.
-3. Drive with the arrow keys until the colored line/object fills a good part of the camera view
-   (check the "RGB" video display window).
-4. Press **C** to freeze the frame.
-   - The **"Captured Frame"** display window now shows the frozen image.
-   - The **"Frame captured (1 = yes)"** readout shows `1`.
-   - Not happy with it? Just press **C** again — it overwrites the previous capture.
-5. Once you're happy with the frozen frame, wait about 1 second (lets the slow camera-rate signal
-   propagate to the workspace sink), then click **Stop** (■).
-6. `captured_frame` is now a variable in the MATLAB base workspace (check with `whos` if you like).
-
-**Part B — pick the color in MATLAB**
-
-7. In the MATLAB command window, run:
+1. In MATLAB (current folder = this folder) run:
    ```matlab
    pick_color
    ```
-8. A figure opens showing the captured frame. **Click directly on the colored line/object.**
-9. A second figure appears with two panels:
-   - Left: your click location marked, with the sampled RGB value in the title.
-   - Right: a black/white mask preview — **white pixels are what the robot will treat as "the color."**
-10. In the command window, answer the prompt:
-    - `y` — save these thresholds
-    - `r` — re-click a different point (if the mask looks wrong)
-    - `n` — cancel, nothing is saved
-11. If the mask is too small/patchy, re-run with a wider tolerance:
-    ```matlab
-    pick_color('Tol', 45)
-    ```
-    If the mask also picks up the background, tighten it:
-    ```matlab
-    pick_color('Tol', 20)
-    ```
-12. On save, `pick_color` writes `red_th` / `green_th` / `blue_th` into **both**
-    `QBot2e_Color_Line_Tracking.mdl` and `QBot2e_Manual_Track_Switch.mdl`, and also saves
-    `color_config.mat` in this folder as a backup record.
+   The **QBot 2e Color Picker** window opens and says *"Waiting for a frame…"*. Leave it open.
+2. Open `QBot2e_Color_Picker.mdl` → Build → Connect → Start.
+3. Drive with the arrow keys until the colored line fills a good part of the camera view
+   (watch the "RGB" video window).
+4. Press **C**. Within about a second:
+   - the frame freezes in the robot's **"Captured Frame"** video window,
+   - the **Color Picker** window pops to the front showing that frame (*"Frame #1 received"*).
+5. **Click on the line** in the left image — click **2–3 spots**: one on a brightly lit part and
+   one on a shaded part of the same color. Each click adds to the range. The picker:
+   - marks the clicked pixels and reads their color (average of a 7×7 patch around each),
+   - shows the range it will follow: `R [lo hi]  G [lo hi]  B [lo hi]`,
+   - shows a mask preview on the right — **white = what the robot will follow**.
+6. Aim for: the whole line white, the floor black.
+   - Parts of the line still black → click on them too, or slide **Tolerance** right.
+   - Floor / background speckled white → **Clear points** and pick less dark spots, or slide
+     Tolerance left. Many speckles are not harmless: with more than 50 separate blobs the
+     tracker gives up and the robot stops.
+   Bad frame? Just press **C** again on the robot; the new frame replaces the old one.
+7. Press **Save color**. The range is written into `red_th` / `green_th` / `blue_th` of
+   **both** `QBot2e_Color_Line_Tracking.mdl` and `QBot2e_Manual_Track_Switch.mdl`, and a record
+   is saved in `color_config.mat`. The status line confirms "Updated … .mdl" for each model.
+8. Stop the picker model and close the picker window.
 
-> **Important:** close `QBot2e_Color_Line_Tracking.mdl` and `QBot2e_Manual_Track_Switch.mdl` in
-> Simulink before running `pick_color` (or re-open them afterward) — MATLAB can't edit a model that's
-> open with unsaved state in a conflicting way. If you forget, `pick_color` will still report success/failure
-> per model in the command window; just check both say "Updated".
+> The robot sends the frozen frame to `captured_frames.bin` in this folder. If you open
+> `pick_color` after the run, it shows the last frame from that file, so you can still pick then.
+
+> If one of the tracking models is open in Simulink when you press Save, it is updated and saved
+> too — any other unsaved edits in that model get saved with it.
 
 > After a new pick you must **rebuild** whichever tracking model you're about to run (Ctrl+B) so the
 > new thresholds actually get compiled onto the robot — just re-running Start without rebuilding keeps
@@ -130,29 +120,40 @@ This is a two-part flow: capture a frame on the robot, then pick the color in MA
 1. Open the model (rebuild it first if you just ran `pick_color`).
 2. Build, Connect, Start (▶). Motors are enabled by default; the **Manual Switch** block is still
    there as an emergency stop if you need to cut power instantly.
-3. Click the Host window for keyboard focus.
-4. You start in **manual mode** (Mode display shows `0`):
+3. You start in **manual mode** (Mode display shows `0`):
    - **↑ / ↓ / ← / →** drive the robot as in workflow 1.
-5. Press **P** to switch to **tracking mode** (Mode display changes to `1`):
+4. Press **P** to switch to **tracking mode** (Mode display changes to `1`):
    - Arrow keys are now ignored; the robot steers itself toward the picked color.
    - If the color goes out of view, it stops and waits (does not revert to manual automatically).
-6. Press **P** again to switch back to **manual mode** (Mode display back to `0`) and drive normally.
-7. You can toggle **P** back and forth as many times as you like during the same run.
-8. **Stop** (■) to end the run.
+5. Press **P** again to switch back to **manual mode** (Mode display back to `0`) and drive normally.
+6. You can toggle **P** back and forth as many times as you like during the same run.
+7. **Stop** (■) to end the run.
 
 ---
 
 ## Troubleshooting
 
-- **Keys don't do anything:** click the small QUARC Host window first — Simulink's own window
-  doesn't receive keyboard input.
-- **`captured_frame` doesn't exist in MATLAB after stopping the picker:** make sure you pressed
-  **C** at least once before stopping, and waited ~1 s after pressing it before clicking Stop.
-- **`pick_color` can't find a file / errors on load:** confirm MATLAB's current folder is this one
-  (`pwd` should show `...\LABS\6-Color Tracking Teleop`).
-- **Robot doesn't move in tracking mode:** check the **Manual Switch** is enabled, and check the
-  mask preview from `pick_color` actually showed solid white on the target color — a mostly-black
-  mask means the robot can't see any matching blob.
+- **Keys don't do anything:** check the model is Connected and Started (not just built), and that
+  the robot IP in Host Initialize is correct.
+- **Pressed C but the picker window stays on "Waiting for a frame…":**
+  - check the **"Frames captured"** display in the picker model goes up by 1 per press — if not,
+    the key isn't reaching the robot (see above);
+  - if it does go up, check `captured_frames.bin` appears in this folder and grows by ~690 KB per
+    press. If it doesn't, the picker model you're running is an old build: run `build_models`,
+    then Build the picker model again;
+  - make sure `pick_color` was started from this folder (`pwd` should end in
+    `\LABS\6-Color Tracking Teleop`).
+- **The picker opened an old frame:** that's the last frame from a previous run, read from
+  `captured_frames.bin`. Press C again with the model running to get a new one.
+- **Robot doesn't move in tracking mode:**
+  - check the **Manual Switch** is enabled;
+  - check the mask in `pick_color` covered the target well — a mostly-black mask means the robot
+    can't see a matching blob; a speckled background (>50 blobs) also makes it stop;
+  - the robot also stops when the blob is at the bottom-center of the image (it counts as
+    "reached") — move the target further ahead;
+  - speeds are `Kv × distance` and `Kw × angle`. Run `set_tracking_gains` (Kv 0.5, Kw 1.2) or
+    `set_tracking_gains(Kv, Kw)` for other values, then rebuild. The Lab 4 originals (0.2 / 0.4)
+    are too slow to move the QBot.
 - **Color tracking is unreliable / drifts:** re-pick the color in the same lighting you'll actually run
   in — thresholds are plain RGB ranges, so they shift if the lighting changes.
 - **Want to start over:** run `build_models` in MATLAB — it regenerates all four `.mdl` files from
@@ -162,6 +163,7 @@ This is a two-part flow: capture a frame on the robot, then pick the color in MA
 ## Notes
 
 - Tracking gains (Kv, Kw, speed limit, stop distance) are the Constant blocks feeding the
-  "Trajectory control" subsystem inside the tracking models — same values as the original Lab 4 model.
+  "Trajectory control" subsystem inside the tracking models. Kv/Kw are raised to 0.5 / 1.2
+  (`set_tracking_gains`); speed limit 0.5 m/s and stop distance 0.1 are the Lab 4 values.
 - `color_config.mat` is just a saved record of the last pick (RGB value, thresholds, timestamp); the
   models themselves don't read it — the thresholds live inside the `.mdl` files.

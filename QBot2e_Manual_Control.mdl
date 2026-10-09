@@ -251,7 +251,7 @@ Model {
       }
       WindowUuid	      "253b6e9a-34f7-4612-99ec-2125d98eea60"
     }
-    BDUuid		    "6fc1bec6-e6ba-46a4-8346-5c0a4b2dfac8"
+    BDUuid		    "e87fbb9b-4261-493f-95b4-961d6dea884e"
   }
   HideAutomaticNames	  on
   CheckForProblematicBlocks "on"
@@ -261,7 +261,7 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "Khim"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Thu Oct 08 10:13:10 2026"
+  LastModifiedDate	  "Fri Oct 09 12:56:47 2026"
   RTWModifiedTimeStamp	  632410681
   ModelVersionFormat	  "1.%<AutoIncrement:249>"
   SampleTimeColors	  on

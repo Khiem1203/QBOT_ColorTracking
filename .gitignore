@@ -1,0 +1,6 @@
+captured_frames.bin
+*.autosave
+slprj/
+*_quarc_linux_pi_3/
+*.rt-linux_pi_3
+*.slxc

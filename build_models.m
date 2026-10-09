@@ -19,6 +19,7 @@ close_system(copyModel(teleopSrc, here, 'QBot2e_Manual_Control'), 0);
 buildColorPicker(teleopSrc, here);
 close_system(copyModel(lfSrc, here, 'QBot2e_Color_Line_Tracking'), 0);
 buildManualTrackSwitch(lfSrc, here);
+set_tracking_gains();
 
 fprintf('\nDone. Models written to:\n  %s\n', here);
 end
@@ -45,7 +46,7 @@ set_param([m '/Data Type Conversion'], 'OutDataTypeStr', 'double');
 set_param([m '/Demux'], 'Outputs', '5');
 
 fcn = [m '/capture_frame'];
-addMatlabFunction(fcn, [1050 520 1180 600], captureFrameCode());
+addMatlabFunction(fcn, [1050 520 1180 640], captureFrameCode());
 
 add_line(m, 'Video3D Capture/1', 'capture_frame/1', 'autorouting', 'on');
 % Keyboard runs at the base step, the camera slower: bring the C key to the camera rate.
@@ -60,19 +61,37 @@ dispDst = [m '/Video Compressed' newline 'Display (Captured Frame)'];
 add_block(dispSrc, dispDst, 'Position', [1260 500 1360 580]);
 add_line(m, 'capture_frame/1', ['Video Compressed' newline 'Display (Captured Frame)/1'], 'autorouting', 'on');
 
-add_block('simulink/Sinks/To Workspace', [m '/To Workspace captured_frame'], ...
-    'VariableName', 'captured_frame', 'MaxDataPoints', '1', 'Decimation', '15', ...
-    'SaveFormat', 'Structure', 'Position', [1260 610 1380 640]);
-add_line(m, 'capture_frame/1', 'To Workspace captured_frame/1', 'autorouting', 'on');
+% The frozen frame goes to a raw binary file on the PC, written only while
+% capture_frame raises "send"; pick_color.m watches that file live.
+sub = [m '/Send frame to PC'];
+add_block('simulink/Ports & Subsystems/Enabled Subsystem', sub, 'Position', [1260 600 1380 660]);
+delete_line(sub, 'In1/1', 'Out1/1');
+delete_block([sub '/Out1']);
+load_system('quarc_library');
+add_block('quarc_library/Sinks/To Host/To Host File', [sub '/To Host File'], ...
+    'Position', [200 40 320 80], ...
+    'file_name', captureFileSpec(m), 'final_file_name', captureFileSpec(m), ...
+    'file_format', 'Raw binary file', 'options', 'No header or footer', 'append', 'off');
+add_line(sub, 'In1/1', 'To Host File/1');
+add_line(m, 'capture_frame/2', 'Send frame to PC/1', 'autorouting', 'on');
+add_line(m, 'capture_frame/4', 'Send frame to PC/Enable', 'autorouting', 'on');
 
-add_block('simulink/Sinks/Display', [m '/Frame captured (1 = yes)'], ...
-    'Position', [1260 660 1325 680]);
-add_line(m, 'capture_frame/2', 'Frame captured (1 = yes)/1', 'autorouting', 'on');
+add_block('simulink/Sinks/Display', [m '/Frames captured'], ...
+    'Position', [1260 680 1325 700]);
+add_line(m, 'capture_frame/3', 'Frames captured/1', 'autorouting', 'on');
+
+% Upload continuously so the frame packet is never missed between triggers.
+set_param(m, 'ExtModeTrigMode', 'normal', 'ExtModeArmWhenConnect', 'on', 'ExtModeLogAll', 'on');
 
 addNote(m, [1050 470], ...
-    'Press C to freeze a frame. Stop the model, then run pick_color in MATLAB.');
+    'Run pick_color in MATLAB first. Press C: the frozen frame pops up in the picker window.');
 save_system(m);
 close_system(m, 0);
+end
+
+function spec = captureFileSpec(m)
+% QUARC evaluates %{...} on the host, so the file always lands next to the model.
+spec = sprintf('%%{fullfile(fileparts(get_param(''%s'',''FileName'')),''captured_frames.bin'')}', m);
 end
 
 % -------------------------------------------------------------------------
@@ -140,22 +159,31 @@ end
 
 function code = captureFrameCode()
 code = strjoin({
-'function [frame, captured] = capture_frame(rgb, c_key)'
+'function [frame, packet, count, send] = capture_frame(rgb, c_key)'
 '%#codegen'
-'% Holds a half-resolution copy of the camera frame taken on the C key press.'
-'persistent held prev has'
+'% On each C press: freeze a half-resolution frame and send it to the PC.'
+'% packet = [capture count mod 256; frame(:)]. It is sent on 3 consecutive'
+'% steps so the host file buffer is always flushed past one complete copy.'
+'persistent held prev cnt left'
 'if isempty(held)'
 '    held = zeros(240, 320, 3, ''uint8'');'
 '    prev = 0;'
-'    has = 0;'
+'    cnt = 0;'
+'    left = 0;'
 'end'
 'if c_key > 0.5 && prev < 0.5'
 '    held = rgb(1:2:end, 1:2:end, :);'
-'    has = 1;'
+'    cnt = cnt + 1;'
+'    left = 3;'
 'end'
 'prev = c_key;'
+'send = double(left > 0);'
+'if left > 0'
+'    left = left - 1;'
+'end'
 'frame = held;'
-'captured = has;'
+'packet = [uint8(mod(cnt, 256)); held(:)];'
+'count = cnt;'
 }, newline);
 end
 

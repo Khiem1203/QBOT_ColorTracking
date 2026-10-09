@@ -19,7 +19,7 @@ Model {
     IsArchitectureModel	    0
     IsAUTOSARArchitectureModel 0
     NumParameterArguments   0
-    NumExternalFileReferences 21
+    NumExternalFileReferences 22
     ExternalFileReference {
       Reference		      "quarc_library/Continuous/Second-Order\nLow-Pass Filter"
       Path		      "QBot2e_Color_Picker/Encoder_to_Velocity1/Second-Order Low-Pass Filter2"
@@ -66,6 +66,12 @@ Model {
       Reference		      "quarc_library/Data Acquisition/Generic/Immediate I//O/HIL Write"
       Path		      "QBot2e_Color_Picker/QBot 2e Basic Motor Commands and Sensor Measurement/QBot2e_IO_Basic/HIL Write"
       SID		      "375"
+      Type		      "LIBRARY_BLOCK"
+    }
+    ExternalFileReference {
+      Reference		      "quarc_library/Sinks/To Host/To Host File"
+      Path		      "QBot2e_Color_Picker/Send frame to PC/To Host File"
+      SID		      "410"
       Type		      "LIBRARY_BLOCK"
     }
     ExternalFileReference {
@@ -269,7 +275,7 @@ Model {
       }
       WindowUuid	      "253b6e9a-34f7-4612-99ec-2125d98eea60"
     }
-    BDUuid		    "80042782-420a-45a1-bdd1-7701f3a87225"
+    BDUuid		    "a107426a-e4e2-41a0-9225-f0766daa3c2d"
   }
   HideAutomaticNames	  on
   CheckForProblematicBlocks "on"
@@ -279,8 +285,8 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "Khim"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Thu Oct 08 10:13:21 2026"
-  RTWModifiedTimeStamp	  713355200
+  LastModifiedDate	  "Fri Oct 09 12:57:08 2026"
+  RTWModifiedTimeStamp	  713451428
   ModelVersionFormat	  "1.%<AutoIncrement:250>"
   SampleTimeColors	  on
   SampleTimeAnnotations	  on
@@ -1387,6 +1393,20 @@ Model {
       SampleTime	      "-1"
     }
     Block {
+      BlockType		      EnablePort
+      StatesWhenEnabling      "held"
+      PropagateVarSize	      "Only when enabling"
+      ShowOutputPort	      off
+      ZeroCross		      on
+      DisallowConstTsAndPrmTs off
+      PortDimensions	      "1"
+      SampleTime	      "-1"
+      OutMin		      "[]"
+      OutMax		      "[]"
+      OutDataTypeStr	      "double"
+      Interpolate	      on
+    }
+    Block {
       BlockType		      Gain
       Gain		      "1"
       Multiplication	      "Element-wise(K.*u)"
@@ -1559,17 +1579,6 @@ Model {
     Block {
       BlockType		      Terminator
     }
-    Block {
-      BlockType		      ToWorkspace
-      VariableName	      "simulink_output"
-      MaxDataPoints	      "1000"
-      Decimation	      "1"
-      SaveFormat	      "Array"
-      Save2DSignal	      "3-D array (concatenate along third dimension)"
-      FixptAsFi		      off
-      NumInputs		      "1"
-      SampleTime	      "0"
-    }
   }
   System {
     Name		    "QBot2e_Color_Picker"
@@ -1590,7 +1599,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "125"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "408"
+    SIDHighWatermark	    "412"
     SimulinkSubDomain	    "Simulink"
     Block {
       BlockType		      Sum
@@ -2143,10 +2152,10 @@ Model {
     }
     Block {
       BlockType		      Display
-      Name		      "Frame captured (1 = yes)"
-      SID		      "407"
+      Name		      "Frames captured"
+      SID		      "411"
       Ports		      [1]
-      Position		      [1260, 660, 1325, 680]
+      Position		      [1260, 680, 1325, 700]
       ZOrder		      391
       Decimation	      "1"
     }
@@ -3947,6 +3956,84 @@ Model {
       }
     }
     Block {
+      BlockType		      SubSystem
+      Name		      "Send frame to PC"
+      SID		      "406"
+      Ports		      [1, 0, 1]
+      Position		      [1260, 600, 1380, 660]
+      ZOrder		      390
+      TreatAsAtomicUnit	      on
+      RequestExecContextInheritance off
+      ContentPreviewEnabled   on
+      System {
+	Name			"Send frame to PC"
+	Location		[421, 301, 919, 601]
+	Open			off
+	PortBlocksUseCompactNotation off
+	SetExecutionDomain	off
+	ExecutionDomainType	"Deduce"
+	ModelBrowserVisibility	off
+	ModelBrowserWidth	200
+	ScreenColor		"white"
+	PaperOrientation	"landscape"
+	PaperPositionMode	"auto"
+	PaperType		"usletter"
+	PaperUnits		"inches"
+	TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
+	TiledPageScale		1
+	ShowPageBoundaries	off
+	ZoomFactor		"100"
+	SimulinkSubDomain	"Simulink"
+	Block {
+	  BlockType		  Inport
+	  Name			  "In1"
+	  SID			  "407"
+	  Position		  [110, 103, 140, 117]
+	  ZOrder		  -1
+	  IconDisplay		  "Port number"
+	}
+	Block {
+	  BlockType		  EnablePort
+	  Name			  "Enable"
+	  SID			  "408"
+	  Ports			  []
+	  Position		  [235, 20, 255, 40]
+	  ZOrder		  -2
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "To Host File"
+	  SID			  "410"
+	  Ports			  [1]
+	  Position		  [200, 40, 320, 80]
+	  ZOrder		  259
+	  AttributesFormatString  "%<final_file_name>"
+	  LibraryVersion	  "1.1981"
+	  SourceBlock		  "quarc_library/Sinks/To Host/To Host File"
+	  SourceType		  "To Host File"
+	  SourceProductName	  "QUARC Targets"
+	  MultiThreadCoSim	  "auto"
+	  file_name		  "%{fullfile(fileparts(get_param('QBot2e_Color_Picker','FileName')),'captured_frames.bin')}"
+	  variable_name		  "data"
+	  decimation		  "1"
+	  sample_time		  "-1"
+	  file_format		  "Raw binary file"
+	  options		  "No header or footer"
+	  append		  off
+	  final_file_name	  "C:\\Users\\Khim\\Documents\\KHIM\\STUDY\\SEM 1 2026\\Autonomous\\LABS\\6-Color Tracking Teleop\\"
+	  "captured_frames.bin"
+	  bitrate		  "2000000"
+	}
+	Line {
+	  ZOrder		  2
+	  SrcBlock		  "In1"
+	  SrcPort		  1
+	  DstBlock		  "To Host File"
+	  DstPort		  1
+	}
+      }
+    }
+    Block {
       BlockType		      Terminator
       Name		      "Terminator1"
       SID		      "344"
@@ -4057,20 +4144,6 @@ Model {
       Position		      [1365, 150, 1375, 160]
       ZOrder		      10
       ShowName		      off
-    }
-    Block {
-      BlockType		      ToWorkspace
-      Name		      "To Workspace captured_frame"
-      SID		      "406"
-      Ports		      [1]
-      Position		      [1260, 610, 1380, 640]
-      ZOrder		      390
-      VariableName	      "captured_frame"
-      MaxDataPoints	      "1"
-      Decimation	      "15"
-      SaveFormat	      "Structure"
-      FixptAsFi		      on
-      SampleTime	      "-1"
     }
     Block {
       BlockType		      SubSystem
@@ -4844,8 +4917,8 @@ Model {
       BlockType		      SubSystem
       Name		      "capture_frame"
       SID		      "403"
-      Ports		      [2, 2]
-      Position		      [1050, 520, 1180, 600]
+      Ports		      [2, 4]
+      Position		      [1050, 520, 1180, 640]
       ZOrder		      387
       ErrorFcn		      "Stateflow.Translate.translate"
       PermitHierarchicalResolution "ExplicitOnly"
@@ -4871,7 +4944,7 @@ Model {
 	TiledPageScale		1
 	ShowPageBoundaries	off
 	ZoomFactor		"100"
-	SIDHighWatermark	"23"
+	SIDHighWatermark	"25"
 	SimulinkSubDomain	"Simulink"
 	Block {
 	  BlockType		  Inport
@@ -4895,7 +4968,7 @@ Model {
 	  Name			  " Demux "
 	  SID			  "403::20"
 	  Ports			  [1, 1]
-	  Position		  [270, 230, 320, 270]
+	  Position		  [270, 280, 320, 320]
 	  ZOrder		  11
 	  Outputs		  "1"
 	}
@@ -4904,11 +4977,11 @@ Model {
 	  Name			  " SFunction "
 	  SID			  "403::19"
 	  Tag			  "Stateflow S-Function 1"
-	  Ports			  [2, 3]
-	  Position		  [180, 100, 230, 180]
+	  Ports			  [2, 5]
+	  Position		  [180, 105, 230, 225]
 	  ZOrder		  10
 	  FunctionName		  "sf_sfun"
-	  PortCounts		  "[2 3]"
+	  PortCounts		  "[2 5]"
 	  SFunctionDeploymentMode off
 	  EnableBusSupport	  off
 	  SFcnIsStateOwnerBlock	  off
@@ -4918,14 +4991,22 @@ Model {
 	  }
 	  Port {
 	    PortNumber		    3
-	    Name		    "captured"
+	    Name		    "packet"
+	  }
+	  Port {
+	    PortNumber		    4
+	    Name		    "count"
+	  }
+	  Port {
+	    PortNumber		    5
+	    Name		    "send"
 	  }
 	}
 	Block {
 	  BlockType		  Terminator
 	  Name			  " Terminator "
 	  SID			  "403::21"
-	  Position		  [460, 241, 480, 259]
+	  Position		  [460, 291, 480, 309]
 	  ZOrder		  12
 	}
 	Block {
@@ -4938,31 +5019,48 @@ Model {
 	}
 	Block {
 	  BlockType		  Outport
-	  Name			  "captured"
+	  Name			  "packet"
 	  SID			  "403::23"
 	  Position		  [460, 136, 480, 154]
 	  ZOrder		  14
 	  Port			  "2"
 	  IconDisplay		  "Port number"
 	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "count"
+	  SID			  "403::24"
+	  Position		  [460, 171, 480, 189]
+	  ZOrder		  15
+	  Port			  "3"
+	  IconDisplay		  "Port number"
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "send"
+	  SID			  "403::25"
+	  Position		  [460, 206, 480, 224]
+	  ZOrder		  16
+	  Port			  "4"
+	  IconDisplay		  "Port number"
+	}
 	Line {
-	  ZOrder		  14
+	  ZOrder		  27
 	  SrcBlock		  "rgb"
 	  SrcPort		  1
 	  DstBlock		  " SFunction "
 	  DstPort		  1
 	}
 	Line {
-	  ZOrder		  15
+	  ZOrder		  28
 	  SrcBlock		  "c_key"
 	  SrcPort		  1
-	  Points		  [120, 0]
 	  DstBlock		  " SFunction "
 	  DstPort		  2
 	}
 	Line {
 	  Name			  "frame"
-	  ZOrder		  16
+	  ZOrder		  29
 	  Labels		  [0, 0]
 	  SrcBlock		  " SFunction "
 	  SrcPort		  2
@@ -4970,23 +5068,41 @@ Model {
 	  DstPort		  1
 	}
 	Line {
-	  Name			  "captured"
-	  ZOrder		  17
+	  Name			  "packet"
+	  ZOrder		  30
 	  Labels		  [0, 0]
 	  SrcBlock		  " SFunction "
 	  SrcPort		  3
-	  DstBlock		  "captured"
+	  DstBlock		  "packet"
 	  DstPort		  1
 	}
 	Line {
-	  ZOrder		  18
+	  Name			  "count"
+	  ZOrder		  31
+	  Labels		  [0, 0]
+	  SrcBlock		  " SFunction "
+	  SrcPort		  4
+	  DstBlock		  "count"
+	  DstPort		  1
+	}
+	Line {
+	  Name			  "send"
+	  ZOrder		  32
+	  Labels		  [0, 0]
+	  SrcBlock		  " SFunction "
+	  SrcPort		  5
+	  DstBlock		  "send"
+	  DstPort		  1
+	}
+	Line {
+	  ZOrder		  33
 	  SrcBlock		  " Demux "
 	  SrcPort		  1
 	  DstBlock		  " Terminator "
 	  DstPort		  1
 	}
 	Line {
-	  ZOrder		  19
+	  ZOrder		  34
 	  SrcBlock		  " SFunction "
 	  SrcPort		  1
 	  DstBlock		  " Demux "
@@ -5347,32 +5463,40 @@ Model {
       ZOrder		      231
       SrcBlock		      "C key to camera rate"
       SrcPort		      1
+      Points		      [15, 0; 0, 30]
       DstBlock		      "capture_frame"
       DstPort		      2
     }
     Line {
-      ZOrder		      233
+      ZOrder		      232
       SrcBlock		      "capture_frame"
       SrcPort		      1
-      Points		      [0, 0]
-      Branch {
-	ZOrder			232
-	DstBlock		"Video Compressed\nDisplay (Captured Frame)"
-	DstPort			1
-      }
-      Branch {
-	ZOrder			234
-	Points			[30, 0; 0, 85]
-	DstBlock		"To Workspace captured_frame"
-	DstPort			1
-      }
+      Points		      [30, 0; 0, 5]
+      DstBlock		      "Video Compressed\nDisplay (Captured Frame)"
+      DstPort		      1
+    }
+    Line {
+      ZOrder		      233
+      SrcBlock		      "capture_frame"
+      SrcPort		      2
+      Points		      [30, 0; 0, 65]
+      DstBlock		      "Send frame to PC"
+      DstPort		      1
+    }
+    Line {
+      ZOrder		      234
+      SrcBlock		      "capture_frame"
+      SrcPort		      4
+      Points		      [55, 0; 0, -40]
+      DstBlock		      "Send frame to PC"
+      DstPort		      enable
     }
     Line {
       ZOrder		      235
       SrcBlock		      "capture_frame"
-      SrcPort		      2
-      Points		      [20, 0; 0, 90]
-      DstBlock		      "Frame captured (1 = yes)"
+      SrcPort		      3
+      Points		      [55, 0; 0, 95]
+      DstBlock		      "Frames captured"
       DstPort		      1
     }
     Annotation {
@@ -5386,9 +5510,9 @@ Model {
       FontWeight	      "bold"
     }
     Annotation {
-      SID		      "408"
-      Name		      "Press C to freeze a frame. Stop the model, then run pick_color in MATLAB."
-      Position		      [1050, 470, 1383, 484]
+      SID		      "412"
+      Name		      "Run pick_color in MATLAB first. Press C: the frozen frame pops up in the picker window."
+      Position		      [1050, 470, 1441, 484]
       InternalMargins	      [0, 0, 0, 0]
       HorizontalAlignment     "left"
       VerticalAlignment	      "top"
@@ -5773,7 +5897,7 @@ Stateflow {
     id			    1
     name		    "QBot2e_Color_Picker"
     sfVersion		    80000019
-    firstTarget		    40
+    firstTarget		    42
   }
   chart {
     id			    2
@@ -5787,7 +5911,7 @@ Stateflow {
     toolbarMode		    LIBRARY_TOOLBAR
     subviewS {
     }
-    ssIdHighWaterMark	    7
+    ssIdHighWaterMark	    9
     decomposition	    CLUSTER_CHART
     type		    EML_CHART
     chartFileNumber	    1
@@ -5796,8 +5920,8 @@ Stateflow {
       name		      "capture_frame"
     }
     firstData		    4
-    firstTransition	    9
-    firstJunction	    8
+    firstTransition	    11
+    firstJunction	    10
   }
   state {
     id			    3
@@ -5813,10 +5937,13 @@ Stateflow {
     decomposition	    CLUSTER_STATE
     eml {
       isEML		      1
-      script		      "function [frame, captured] = capture_frame(rgb, c_key)\n%#codegen\n% Holds a half-resolution copy"
-      " of the camera frame taken on the C key press.\npersistent held prev has\nif isempty(held)\n    held = zeros(240"
-      ", 320, 3, 'uint8');\n    prev = 0;\n    has = 0;\nend\nif c_key > 0.5 && prev < 0.5\n    held = rgb(1:2:end, 1:2"
-      ":end, :);\n    has = 1;\nend\nprev = c_key;\nframe = held;\ncaptured = has;"
+      script		      "function [frame, packet, count, send] = capture_frame(rgb, c_key)\n%#codegen\n% On each C press: "
+      "freeze a half-resolution frame and send it to the PC.\n% packet = [capture count mod 256; frame(:)]. It is sent "
+      "on 3 consecutive\n% steps so the host file buffer is always flushed past one complete copy.\npersistent held pre"
+      "v cnt left\nif isempty(held)\n    held = zeros(240, 320, 3, 'uint8');\n    prev = 0;\n    cnt = 0;\n    left = 0"
+      ";\nend\nif c_key > 0.5 && prev < 0.5\n    held = rgb(1:2:end, 1:2:end, :);\n    cnt = cnt + 1;\n    left = 3;\ne"
+      "nd\nprev = c_key;\nsend = double(left > 0);\nif left > 0\n    left = left - 1;\nend\nframe = held;\npacket = [ui"
+      "nt8(mod(cnt, 256)); held(:)];\ncount = cnt;"
       editorLayout	      "100 M4x1[10 5 700 500]"
     }
   }
@@ -5893,7 +6020,7 @@ Stateflow {
   data {
     id			    7
     ssIdNumber		    7
-    name		    "captured"
+    name		    "packet"
     scope		    OUTPUT_DATA
     machine		    1
     props {
@@ -5913,10 +6040,60 @@ Stateflow {
       }
     }
     dataType		    "Inherit: Same as Simulink"
-    linkNode		    [2 6 0]
+    linkNode		    [2 6 8]
+  }
+  data {
+    id			    8
+    ssIdNumber		    8
+    name		    "count"
+    scope		    OUTPUT_DATA
+    machine		    1
+    props {
+      array {
+	size			"-1"
+      }
+      type {
+	method			SF_INHERITED_TYPE
+	primitive		SF_DOUBLE_TYPE
+	isSigned		1
+	wordLength		"16"
+      }
+      complexity	      SF_COMPLEX_INHERITED
+      frame		      SF_FRAME_NO
+      unit {
+	name			"inherit"
+      }
+    }
+    dataType		    "Inherit: Same as Simulink"
+    linkNode		    [2 7 9]
+  }
+  data {
+    id			    9
+    ssIdNumber		    9
+    name		    "send"
+    scope		    OUTPUT_DATA
+    machine		    1
+    props {
+      array {
+	size			"-1"
+      }
+      type {
+	method			SF_INHERITED_TYPE
+	primitive		SF_DOUBLE_TYPE
+	isSigned		1
+	wordLength		"16"
+      }
+      complexity	      SF_COMPLEX_INHERITED
+      frame		      SF_FRAME_NO
+      unit {
+	name			"inherit"
+      }
+    }
+    dataType		    "Inherit: Same as Simulink"
+    linkNode		    [2 8 0]
   }
   junction {
-    id			    8
+    id			    10
     position		    [23.5747 49.5747 7]
     chart		    2
     subviewer		    2
@@ -5925,7 +6102,7 @@ Stateflow {
     linkNode		    [2 0 0]
   }
   transition {
-    id			    9
+    id			    11
     labelString		    "{eML_blk_kernel();}"
     labelPosition	    [28.125 13.875 102.544 14.964]
     fontSize		    12
@@ -5933,7 +6110,7 @@ Stateflow {
       intersection	      [0 0 1 0 23.5747 14.625 0 0]
     }
     dst {
-      id		      8
+      id		      10
       intersection	      [1 0 -1 0 23.5747 42.5747 0 0]
     }
     midPoint		    [23.5747 24.9468]
@@ -5949,20 +6126,20 @@ Stateflow {
     linkNode		    [2 0 0]
   }
   instance {
-    id			    10
+    id			    12
     machine		    1
     name		    "capture_frame"
     chart		    2
   }
   chart {
-    id			    11
+    id			    13
     machine		    1
     name		    "QBot 2e Full Kinematics (No Gyro)/Qbot2e_Diff_Drive_Kinematics/Qbot2_Diff_Drive_Kinematics"
     windowPosition	    [470.274 134.75 213 385]
     viewLimits		    [0 156.75 0 153.75]
     screen		    [1 1 1366 768 1.333333333333333]
-    treeNode		    [0 12 0 0]
-    viewObj		    11
+    treeNode		    [0 14 0 0]
+    viewObj		    13
     ssIdHighWaterMark	    8
     decomposition	    CLUSTER_CHART
     type		    EML_CHART
@@ -5971,19 +6148,19 @@ Stateflow {
     eml {
       name		      "fcn"
     }
-    firstData		    13
-    firstTransition	    18
-    firstJunction	    17
+    firstData		    15
+    firstTransition	    20
+    firstJunction	    19
   }
   state {
-    id			    12
+    id			    14
     labelString		    "eML_blk_kernel()"
     position		    [18 64.5 118 66]
     fontSize		    12
-    chart		    11
-    treeNode		    [11 0 0 0]
+    chart		    13
+    treeNode		    [13 0 0 0]
     superState		    SUBCHART
-    subviewer		    11
+    subviewer		    13
     ssIdNumber		    1
     type		    FUNC_STATE
     decomposition	    CLUSTER_STATE
@@ -5994,7 +6171,7 @@ Stateflow {
     }
   }
   data {
-    id			    13
+    id			    15
     ssIdNumber		    4
     name		    "vL"
     scope		    INPUT_DATA
@@ -6013,10 +6190,10 @@ Stateflow {
       }
     }
     dataType		    "Inherit: Same as Simulink"
-    linkNode		    [11 0 14]
+    linkNode		    [13 0 16]
   }
   data {
-    id			    14
+    id			    16
     ssIdNumber		    5
     name		    "vC"
     scope		    OUTPUT_DATA
@@ -6036,10 +6213,10 @@ Stateflow {
       }
     }
     dataType		    "Inherit: Same as Simulink"
-    linkNode		    [11 13 15]
+    linkNode		    [13 15 17]
   }
   data {
-    id			    15
+    id			    17
     ssIdNumber		    6
     name		    "vR"
     scope		    INPUT_DATA
@@ -6061,10 +6238,10 @@ Stateflow {
       }
     }
     dataType		    "Inherit: Same as Simulink"
-    linkNode		    [11 14 16]
+    linkNode		    [13 16 18]
   }
   data {
-    id			    16
+    id			    18
     ssIdNumber		    7
     name		    "Omega"
     scope		    OUTPUT_DATA
@@ -6086,19 +6263,19 @@ Stateflow {
       }
     }
     dataType		    "Inherit: Same as Simulink"
-    linkNode		    [11 15 0]
+    linkNode		    [13 17 0]
   }
   junction {
-    id			    17
+    id			    19
     position		    [23.5747 49.5747 7]
-    chart		    11
-    subviewer		    11
+    chart		    13
+    subviewer		    13
     ssIdNumber		    3
     type		    CONNECTIVE_JUNCTION
-    linkNode		    [11 0 0]
+    linkNode		    [13 0 0]
   }
   transition {
-    id			    18
+    id			    20
     labelString		    "{eML_blk_kernel();}"
     labelPosition	    [32.125 19.875 102.544 14.964]
     fontSize		    12
@@ -6106,37 +6283,37 @@ Stateflow {
       intersection	      [0 0 1 0 23.5747 14.625 0 0]
     }
     dst {
-      id		      17
+      id		      19
       intersection	      [1 0 -1 0 23.5747 42.5747 0 0]
     }
     midPoint		    [23.5747 24.9468]
-    chart		    11
+    chart		    13
     dataLimits		    [23.575 23.575 14.625 34.575]
-    subviewer		    11
+    subviewer		    13
     drawStyle		    SMART
     slide {
       sticky		      BOTH_STICK
     }
     executionOrder	    1
     ssIdNumber		    2
-    linkNode		    [11 0 0]
+    linkNode		    [13 0 0]
   }
   instance {
-    id			    19
+    id			    21
     machine		    1
     name		    "QBot 2e Full Kinematics (No Gyro)/Qbot2e_Diff_Drive_Kinematics/Qbot2_Diff_Drive_Kinematics"
-    chart		    11
+    chart		    13
   }
   chart {
-    id			    20
+    id			    22
     machine		    1
     name		    "QBot 2e Full Kinematics (No Gyro)/Qbot2e_Kinematics (No Gyro)/Qbot2_Kinematics (Vf,W to x_dot,y_dot and"
     " psi_dot)"
     windowPosition	    [470.274 134.75 213 385]
     viewLimits		    [0 156.75 0 153.75]
     screen		    [1 1 1366 768 1.333333333333333]
-    treeNode		    [0 21 0 0]
-    viewObj		    20
+    treeNode		    [0 23 0 0]
+    viewObj		    22
     ssIdHighWaterMark	    10
     decomposition	    CLUSTER_CHART
     type		    EML_CHART
@@ -6145,19 +6322,19 @@ Stateflow {
     eml {
       name		      "fcn"
     }
-    firstData		    22
-    firstTransition	    29
-    firstJunction	    28
+    firstData		    24
+    firstTransition	    31
+    firstJunction	    30
   }
   state {
-    id			    21
+    id			    23
     labelString		    "eML_blk_kernel()"
     position		    [18 64.5 118 66]
     fontSize		    12
-    chart		    20
-    treeNode		    [20 0 0 0]
+    chart		    22
+    treeNode		    [22 0 0 0]
     superState		    SUBCHART
-    subviewer		    20
+    subviewer		    22
     ssIdNumber		    1
     type		    FUNC_STATE
     decomposition	    CLUSTER_STATE
@@ -6169,7 +6346,7 @@ Stateflow {
     }
   }
   data {
-    id			    22
+    id			    24
     ssIdNumber		    4
     name		    "vC"
     scope		    INPUT_DATA
@@ -6188,10 +6365,10 @@ Stateflow {
       }
     }
     dataType		    "Inherit: Same as Simulink"
-    linkNode		    [20 0 23]
+    linkNode		    [22 0 25]
   }
   data {
-    id			    23
+    id			    25
     ssIdNumber		    5
     name		    "x_dot"
     scope		    OUTPUT_DATA
@@ -6211,10 +6388,10 @@ Stateflow {
       }
     }
     dataType		    "Inherit: Same as Simulink"
-    linkNode		    [20 22 24]
+    linkNode		    [22 24 26]
   }
   data {
-    id			    24
+    id			    26
     ssIdNumber		    6
     name		    "Omega"
     scope		    INPUT_DATA
@@ -6236,10 +6413,10 @@ Stateflow {
       }
     }
     dataType		    "Inherit: Same as Simulink"
-    linkNode		    [20 23 25]
+    linkNode		    [22 25 27]
   }
   data {
-    id			    25
+    id			    27
     ssIdNumber		    7
     name		    "y_dot"
     scope		    OUTPUT_DATA
@@ -6261,10 +6438,10 @@ Stateflow {
       }
     }
     dataType		    "Inherit: Same as Simulink"
-    linkNode		    [20 24 26]
+    linkNode		    [22 26 28]
   }
   data {
-    id			    26
+    id			    28
     ssIdNumber		    9
     name		    "psi"
     scope		    INPUT_DATA
@@ -6286,10 +6463,10 @@ Stateflow {
       }
     }
     dataType		    "Inherit: Same as Simulink"
-    linkNode		    [20 25 27]
+    linkNode		    [22 27 29]
   }
   data {
-    id			    27
+    id			    29
     ssIdNumber		    10
     name		    "psi_dot"
     scope		    OUTPUT_DATA
@@ -6311,19 +6488,19 @@ Stateflow {
       }
     }
     dataType		    "Inherit: Same as Simulink"
-    linkNode		    [20 26 0]
+    linkNode		    [22 28 0]
   }
   junction {
-    id			    28
+    id			    30
     position		    [23.5747 49.5747 7]
-    chart		    20
-    subviewer		    20
+    chart		    22
+    subviewer		    22
     ssIdNumber		    3
     type		    CONNECTIVE_JUNCTION
-    linkNode		    [20 0 0]
+    linkNode		    [22 0 0]
   }
   transition {
-    id			    29
+    id			    31
     labelString		    "{eML_blk_kernel();}"
     labelPosition	    [32.125 19.875 102.544 14.964]
     fontSize		    12
@@ -6331,38 +6508,38 @@ Stateflow {
       intersection	      [0 0 1 0 23.5747 14.625 0 0]
     }
     dst {
-      id		      28
+      id		      30
       intersection	      [1 0 -1 0 23.5747 42.5747 0 0]
     }
     midPoint		    [23.5747 24.9468]
-    chart		    20
+    chart		    22
     dataLimits		    [23.575 23.575 14.625 34.575]
-    subviewer		    20
+    subviewer		    22
     drawStyle		    SMART
     slide {
       sticky		      BOTH_STICK
     }
     executionOrder	    1
     ssIdNumber		    2
-    linkNode		    [20 0 0]
+    linkNode		    [22 0 0]
   }
   instance {
-    id			    30
+    id			    32
     machine		    1
     name		    "QBot 2e Full Kinematics (No Gyro)/Qbot2e_Kinematics (No Gyro)/Qbot2_Kinematics (Vf,W to x_dot,y_dot and"
     " psi_dot)"
-    chart		    20
+    chart		    22
   }
   chart {
-    id			    31
+    id			    33
     machine		    1
     name		    "QBot 2e Inverse Kinematics \n(Forward Velocity and Angular Velocity\n into Left and Right Wheel Velloci"
     "ty)/Qbot2e_Inverse_Kinematics \n(Forward Velocity and Angular Velocity into Left and Right Wheel Vellocity)"
     windowPosition	    [456.045 134.75 213 385]
     viewLimits		    [0 156.75 0 153.75]
     screen		    [1 1 1366 768 1.333333333333333]
-    treeNode		    [0 32 0 0]
-    viewObj		    31
+    treeNode		    [0 34 0 0]
+    viewObj		    33
     ssIdHighWaterMark	    9
     decomposition	    CLUSTER_CHART
     type		    EML_CHART
@@ -6371,19 +6548,19 @@ Stateflow {
     eml {
       name		      "fcn"
     }
-    firstData		    33
-    firstTransition	    38
-    firstJunction	    37
+    firstData		    35
+    firstTransition	    40
+    firstJunction	    39
   }
   state {
-    id			    32
+    id			    34
     labelString		    "eML_blk_kernel()"
     position		    [18 64.5 118 66]
     fontSize		    12
-    chart		    31
-    treeNode		    [31 0 0 0]
+    chart		    33
+    treeNode		    [33 0 0 0]
     superState		    SUBCHART
-    subviewer		    31
+    subviewer		    33
     ssIdNumber		    1
     type		    FUNC_STATE
     decomposition	    CLUSTER_STATE
@@ -6395,7 +6572,7 @@ Stateflow {
     }
   }
   data {
-    id			    33
+    id			    35
     ssIdNumber		    6
     name		    "vR"
     scope		    OUTPUT_DATA
@@ -6417,10 +6594,10 @@ Stateflow {
       }
     }
     dataType		    "Inherit: Same as Simulink"
-    linkNode		    [31 0 34]
+    linkNode		    [33 0 36]
   }
   data {
-    id			    34
+    id			    36
     ssIdNumber		    4
     name		    "vL"
     scope		    OUTPUT_DATA
@@ -6440,10 +6617,10 @@ Stateflow {
       }
     }
     dataType		    "Inherit: Same as Simulink"
-    linkNode		    [31 33 35]
+    linkNode		    [33 35 37]
   }
   data {
-    id			    35
+    id			    37
     ssIdNumber		    8
     name		    "vC"
     scope		    INPUT_DATA
@@ -6465,10 +6642,10 @@ Stateflow {
       }
     }
     dataType		    "Inherit: Same as Simulink"
-    linkNode		    [31 34 36]
+    linkNode		    [33 36 38]
   }
   data {
-    id			    36
+    id			    38
     ssIdNumber		    9
     name		    "Omega"
     scope		    INPUT_DATA
@@ -6490,19 +6667,19 @@ Stateflow {
       }
     }
     dataType		    "Inherit: Same as Simulink"
-    linkNode		    [31 35 0]
+    linkNode		    [33 37 0]
   }
   junction {
-    id			    37
+    id			    39
     position		    [23.5747 49.5747 7]
-    chart		    31
-    subviewer		    31
+    chart		    33
+    subviewer		    33
     ssIdNumber		    3
     type		    CONNECTIVE_JUNCTION
-    linkNode		    [31 0 0]
+    linkNode		    [33 0 0]
   }
   transition {
-    id			    38
+    id			    40
     labelString		    "{eML_blk_kernel();}"
     labelPosition	    [32.125 19.875 102.544 14.964]
     fontSize		    12
@@ -6510,39 +6687,39 @@ Stateflow {
       intersection	      [0 0 1 0 23.5747 14.625 0 0]
     }
     dst {
-      id		      37
+      id		      39
       intersection	      [1 0 -1 0 23.5747 42.5747 0 0]
     }
     midPoint		    [23.5747 24.9468]
-    chart		    31
+    chart		    33
     dataLimits		    [21.175 25.975 14.625 42.575]
-    subviewer		    31
+    subviewer		    33
     drawStyle		    SMART
     slide {
       sticky		      BOTH_STICK
     }
     executionOrder	    1
     ssIdNumber		    2
-    linkNode		    [31 0 0]
+    linkNode		    [33 0 0]
   }
   instance {
-    id			    39
+    id			    41
     machine		    1
     name		    "QBot 2e Inverse Kinematics \n(Forward Velocity and Angular Velocity\n into Left and Right Wheel Velloci"
     "ty)/Qbot2e_Inverse_Kinematics \n(Forward Velocity and Angular Velocity into Left and Right Wheel Vellocity)"
-    chart		    31
+    chart		    33
   }
   target {
-    id			    40
+    id			    42
     machine		    1
     name		    "sfun"
     description		    "Default Simulink S-Function Target."
-    linkNode		    [1 0 41]
+    linkNode		    [1 0 43]
   }
   target {
-    id			    41
+    id			    43
     machine		    1
     name		    "rtw"
-    linkNode		    [1 40 0]
+    linkNode		    [1 42 0]
   }
 }
